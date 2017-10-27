@@ -5,12 +5,12 @@
         android:id="@+id/action_one"
         android:enabled="true"
         android:icon="@drawable/main"
-        android:title="map"
+        android:title="compass"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_two"
         android:enabled="true"
         android:icon="@drawable/main"
-        android:title="compass"
+        android:title="map"
         app:showAsAction="ifRoom" />
 </menu>

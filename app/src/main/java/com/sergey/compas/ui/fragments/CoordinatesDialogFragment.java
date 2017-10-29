@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -12,6 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.sergey.compas.R;
 
@@ -39,10 +39,8 @@ public class CoordinatesDialogFragment extends DialogFragment {
                 .setView(createDialogView())
                 .setPositiveButton(R.string.ok, null)
                 .setNegativeButton(R.string.cancel, null);
-
         AlertDialog dialog = builder.create();
         initializeDialog(dialog);
-
         return dialog;
     }
 
@@ -63,7 +61,7 @@ public class CoordinatesDialogFragment extends DialogFragment {
                 && validateLongitude(longitude.getText().toString());
 
         if (!valid)
-            Snackbar.make(latitude, R.string.incorrect_value, Snackbar.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.incorrect_value), Toast.LENGTH_SHORT).show();
 
         return valid;
     }

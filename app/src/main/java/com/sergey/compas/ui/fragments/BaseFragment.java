@@ -86,5 +86,6 @@ public abstract class BaseFragment extends Fragment {
                 .create()
                 .show();
     }
+
     public abstract void setLocation(Location location);
 }

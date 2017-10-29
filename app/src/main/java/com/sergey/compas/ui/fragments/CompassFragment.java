@@ -12,15 +12,13 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.RotateAnimation;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.sergey.compas.MyApplication;
 import com.sergey.compas.R;
 import com.sergey.compas.ui.MainActivity;
+import com.sergey.compas.ui.view.CustomCompasView;
 
 import javax.inject.Inject;
 
@@ -34,10 +32,9 @@ import static com.sergey.compas.ui.fragments.MapFragment.LNG;
 
 public class CompassFragment extends BaseFragment implements SensorEventListener, CoordinatesDialogFragment.Callback {
 
-    private ImageView compassView;
+    private CustomCompasView customCompasView;
     private TextView currentLongitude, currentLatitude, targetLng, targetLat;
 
-    private float currentDegree = 0f;
     private SensorManager sensorManager;
     private Sensor msensor;
     private Sensor gsensor;
@@ -63,7 +60,8 @@ public class CompassFragment extends BaseFragment implements SensorEventListener
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.compas_fragment_layout, null);
-        compassView = view.findViewById(R.id.compass_img);
+        //  compassView = view.findViewById(R.id.compass_img);
+        customCompasView = view.findViewById(R.id.compass_img);
         currentLongitude = view.findViewById(R.id.current_longitude);
         currentLatitude = view.findViewById(R.id.current_latitude);
         targetLng = view.findViewById(R.id.target_longitude);
@@ -146,15 +144,15 @@ public class CompassFragment extends BaseFragment implements SensorEventListener
         if (success) {
             float orientation[] = new float[3];
             SensorManager.getOrientation(R, orientation);
-            azimuth = (float) Math.toDegrees(orientation[0]);
-            azimuth = (azimuth + 360) % 360;
-            rotateImg(azimuth - bearing);
+            azimuth = (float) Math.toDegrees(-orientation[0]);
+            azimuth = azimuth < 0 ? azimuth + 360 : azimuth;
+            customCompasView.setAzimuth(azimuth);
         }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
+        //do nothing
     }
 
     public void setCurrentCoordinates(LatLng currentLatLng) {
@@ -179,7 +177,7 @@ public class CompassFragment extends BaseFragment implements SensorEventListener
         targetLoc.setLatitude(targetLatLng.latitude);
         targetLoc.setLongitude(targetLatLng.longitude);
         bearing = currentLoc.bearingTo(targetLoc);
-        rotateImg(azimuth - bearing);
+        customCompasView.setBearing(bearing);
 
     }
 
@@ -187,20 +185,14 @@ public class CompassFragment extends BaseFragment implements SensorEventListener
     @Override
     public void setLocation(Location location) {
         currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        double lat = Double.longBitsToDouble(sharedPreferences.getLong(LAT, 0));
-        double lng = Double.longBitsToDouble(sharedPreferences.getLong(LNG, 0));
-        Location targetLoc = new Location("target");
-        targetLoc.setLongitude(lng);
-        targetLoc.setLatitude(lat);
-        bearing = location.bearingTo(targetLoc);
-        rotateImg(azimuth - bearing);
-    }
-
-    private void rotateImg(float degree) {
-        RotateAnimation rotateAnimation = new RotateAnimation(-currentDegree, -degree, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotateAnimation.setDuration(210);
-        rotateAnimation.setFillAfter(true);
-        compassView.startAnimation(rotateAnimation);
-        currentDegree = degree;
+        if (sharedPreferences.getBoolean(IS_SETTLED_POINT, false)) {
+            double lat = Double.longBitsToDouble(sharedPreferences.getLong(LAT, 0));
+            double lng = Double.longBitsToDouble(sharedPreferences.getLong(LNG, 0));
+            Location targetLoc = new Location("target");
+            targetLoc.setLongitude(lng);
+            targetLoc.setLatitude(lat);
+            bearing = location.bearingTo(targetLoc);
+            customCompasView.setBearing(bearing);
+        }
     }
 }

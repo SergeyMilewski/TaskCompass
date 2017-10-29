@@ -12,4 +12,5 @@
     <string name="input_dialog_title">Input coordinates</string>
     <string name="incorrect_value">Incorrect value</string>
     <string name="input_target">Input target</string>
+    <string name="info">You can also drop your target on the map. Just touch and hold your finger at the desired location.</string>
 </resources>

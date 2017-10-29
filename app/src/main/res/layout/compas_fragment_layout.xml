@@ -6,51 +6,105 @@
 
     <ImageView
         android:id="@+id/compass_img"
-        android:layout_width="match_parent"
+        android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
+        android:background="@drawable/circle"
+        android:padding="25dp"
         android:src="@drawable/ic_arrows" />
 
 
     <TextView
         android:id="@+id/current_longitude_label"
+        style="@style/TextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/compass_img"
-        android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
-        tools:text="current longitude" />
+        android:text="@string/current_longitude"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/current_longitude"
+        style="@style/TextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/current_longitude_label"
-        android:layout_marginLeft="20dp"
-        android:textSize="12sp"
         tools:text="current longitude" />
 
     <TextView
         android:id="@+id/current_latitude_label"
+        style="@style/TextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@id/compass_img"
-        android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
-        tools:text="current latitude" />
+        android:text="@string/current_latitude"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/current_latitude"
+        style="@style/TextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@id/current_latitude_label"
-        android:layout_marginRight="20dp"
-        android:textSize="12sp"
         tools:text="current latitude" />
+
+
+    <TextView
+        android:id="@+id/target_longitude_label"
+        style="@style/TextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/current_longitude"
+        android:layout_marginTop="30dp"
+        android:text="@string/target_longitude"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/target_longitude"
+        style="@style/TextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/target_longitude_label"
+        tools:text="current latitude" />
+
+
+    <TextView
+        android:id="@+id/target_latitude_label"
+        style="@style/TextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/current_longitude"
+        android:layout_marginTop="30dp"
+        android:text="@string/target_latitude"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/target_latitude"
+        style="@style/TextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/target_longitude_label"
+        tools:text="current latitude" />
+
+    <Button
+        android:id="@+id/input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/target_longitude"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="@string/input_target" />
 
 
 </RelativeLayout>

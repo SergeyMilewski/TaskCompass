@@ -2,10 +2,18 @@ package com.sergey.compas.ui.fragments;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.sergey.compas.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,23 +31,23 @@ public abstract class BaseFragment extends Fragment {
 
     private OnPermissionResponse onPermissionResponse;
     private List<String> permissionsList;
+    protected GoogleMap googleMap;
 
 
-    public boolean checkPermission(OnPermissionResponse permissionResponse) {
-        boolean isGranted;
+    public void checkPermission(OnPermissionResponse permissionResponse) {
         onPermissionResponse = permissionResponse;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             permissionsList = new ArrayList<>();
             permissionsList.add(Manifest.permission.ACCESS_COARSE_LOCATION);
             permissionsList.add(Manifest.permission.ACCESS_FINE_LOCATION);
-            int hasWriteStoragePermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            isGranted = hasWriteStoragePermission == PackageManager.PERMISSION_GRANTED;
-            if (!isGranted) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
+            int hasLocation = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
+            if (hasLocation == PackageManager.PERMISSION_GRANTED) {
+                onPermissionResponse.onResponse();
+                return;
             }
-            return isGranted;
+            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
         } else {
-            return true;
+            onPermissionResponse.onResponse();
         }
     }
 
@@ -56,10 +64,27 @@ public abstract class BaseFragment extends Fragment {
                 if (onPermissionResponse != null) {
                     onPermissionResponse.onResponse();
                 }
+            } else {
+                showPermissionErrorDialog();
             }
 
         }
     }
 
+    public void zoomToUserPosition(LatLng latLng) {
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(latLng).zoom(15).build();
+        googleMap.animateCamera(CameraUpdateFactory
+                .newCameraPosition(cameraPosition));
+    }
 
+    private void showPermissionErrorDialog() {
+        new AlertDialog.Builder(getContext())
+                .setTitle(getString(R.string.dialog_loc_label))
+                .setMessage(getString(R.string.restriction_location_message))
+                .setPositiveButton(getString(R.string.ok), (dialog, which) -> dialog.dismiss())
+                .create()
+                .show();
+    }
+    public abstract void setLocation(Location location);
 }

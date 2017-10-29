@@ -2,7 +2,9 @@ package com.sergey.compas.dagger.modules;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.LocationManager;
+import android.preference.PreferenceManager;
 
 import javax.inject.Singleton;
 
@@ -29,8 +31,9 @@ public class AppModule {
 
     @Provides
     @Singleton
-    LocationManager providesLocationManager(Application application) {
-        return (LocationManager) application.getSystemService(Context.LOCATION_SERVICE);
+    SharedPreferences providesSharedPreferences(Application application) {
+        return PreferenceManager.getDefaultSharedPreferences(application);
     }
+
 
 }

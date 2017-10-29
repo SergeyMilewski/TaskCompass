@@ -1,3 +1,15 @@
 <resources>
-    <string name="app_name">Compas</string>
+    <string name="app_name">compass</string>
+    <string name="map">map</string>
+    <string name="current_longitude">Current longitude</string>
+    <string name="current_latitude">Current latitude</string>
+    <string name="target_longitude">Target longitude</string>
+    <string name="target_latitude">Target latitude</string>
+    <string name="restriction_location_message">"Sorry I can't determine your position. You have to grand permission for it"</string>
+    <string name="dialog_loc_label">"Location alert"</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="input_dialog_title">Input coordinates</string>
+    <string name="incorrect_value">Incorrect value</string>
+    <string name="input_target">Input target</string>
 </resources>

@@ -96,6 +96,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(
                     googleApiClient);
             requestLocationUpdate();
+            if(lastLocation == null){
+                return;
+            }
             if (isShouldZoom(lastLocation)) {
                 baseFragment.zoomToUserPosition(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
             }

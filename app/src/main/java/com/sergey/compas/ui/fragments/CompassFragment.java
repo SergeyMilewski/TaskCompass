@@ -19,6 +19,7 @@ import com.sergey.compas.MyApplication;
 import com.sergey.compas.R;
 import com.sergey.compas.ui.MainActivity;
 import com.sergey.compas.ui.view.CustomCompasView;
+import com.sergey.compas.ui.view.CustomProgressView;
 
 import javax.inject.Inject;
 
@@ -34,6 +35,7 @@ public class CompassFragment extends BaseFragment implements SensorEventListener
 
     private CustomCompasView customCompasView;
     private TextView currentLongitude, currentLatitude, targetLng, targetLat;
+    private CustomProgressView customProgressView;
 
     private SensorManager sensorManager;
     private Sensor msensor;
@@ -66,6 +68,7 @@ public class CompassFragment extends BaseFragment implements SensorEventListener
         currentLatitude = view.findViewById(R.id.current_latitude);
         targetLng = view.findViewById(R.id.target_longitude);
         targetLat = view.findViewById(R.id.target_latitude);
+        customProgressView = view.findViewById(R.id.progress);
         view.findViewById(R.id.input).setOnClickListener(v -> new CoordinatesDialogFragment().show(getChildFragmentManager(), CoordinatesDialogFragment.TAG));
         return view;
     }
@@ -90,6 +93,11 @@ public class CompassFragment extends BaseFragment implements SensorEventListener
                 SensorManager.SENSOR_DELAY_GAME);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        customProgressView.startAnimation();
+    }
 
     @Override
     public void onStop() {

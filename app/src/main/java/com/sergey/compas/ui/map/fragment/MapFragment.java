@@ -1,15 +1,11 @@
-package com.sergey.compas.ui.fragments;
+package com.sergey.compas.ui.map.fragment;
 
-import android.content.SharedPreferences;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -19,34 +15,23 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.sergey.compas.MyApplication;
 import com.sergey.compas.R;
-import com.sergey.compas.data.RxLocationEmitter;
-import com.sergey.compas.ui.MainActivity;
-
-import java.util.concurrent.TimeUnit;
+import com.sergey.compas.ui.BaseFragment;
+import com.sergey.compas.ui.map.presenter.MapPresenter;
 
 import javax.inject.Inject;
-
-import io.reactivex.disposables.Disposable;
 
 /**
  * Created by smilevkiy on 27.10.17.
  */
 
-public class MapFragment extends BaseFragment implements OnMapReadyCallback {
+public class MapFragment extends BaseFragment implements OnMapReadyCallback, MapPresenter.mapUI {
 
     private MapView mapView;
     private Marker targetLocation;
-    public final static String LNG = "longitude";
-    public final static String LAT = "latitude";
-    public final static String IS_SETTLED_POINT = "is_settled_point";
-    private Disposable disposable;
 
 
     @Inject
-    SharedPreferences sharedPreferences;
-
-    @Inject
-    RxLocationEmitter rxLocationEmitter;
+    MapPresenter presenter;
 
 
     @Override
@@ -96,15 +81,20 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
     public void onResume() {
         mapView.onResume();
         super.onResume();
-        checkPermission(() -> disposable = rxLocationEmitter.getLastLocation()
-                .subscribe(location -> zoomToUserPosition(new LatLng(location.getLatitude(), location.getLongitude()))));
+        presenter.attachUI(this);
+        checkPermission(() -> presenter.zooIfPermissionGranted());
+    }
+
+    @Override
+    public void zoomToPosition(LatLng latLng) {
+        zoomToUserPosition(latLng);
     }
 
     @Override
     public void onPause() {
         mapView.onPause();
         super.onPause();
-        disposable.dispose();
+        presenter.detacheUI();
 
     }
 
@@ -125,14 +115,14 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         this.googleMap = googleMap;
         checkPermission(() -> this.googleMap.setMyLocationEnabled(true));
         this.googleMap.setOnMapLongClickListener(this::putMarker);
-        if (sharedPreferences.getBoolean(IS_SETTLED_POINT, false)) {
-            double lng = Double.longBitsToDouble(sharedPreferences.getLong(LNG, 0));
-            double lat = Double.longBitsToDouble(sharedPreferences.getLong(LAT, 0));
-            putMarker(new LatLng(lat, lng));
-        }
+        presenter.putSavedMarker();
 
     }
 
+    @Override
+    public void showSavedMarker(double lat, double lng) {
+        putMarker(new LatLng(lat, lng));
+    }
 
     private void putMarker(LatLng markerLocation) {
         if (targetLocation != null) {
@@ -140,19 +130,7 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
         }
         MarkerOptions markerOptions = new MarkerOptions().position(markerLocation).title("TARGET");
         targetLocation = googleMap.addMarker(markerOptions);
-        savePoint(markerLocation);
+        presenter.savePoint(markerLocation);
 
     }
-
-    @Override
-    public void setLocation(Location location) {
-        //do nothing
-    }
-
-    private void savePoint(LatLng latLng) {
-        sharedPreferences.edit().putLong(LNG, Double.doubleToLongBits(latLng.longitude)).apply();
-        sharedPreferences.edit().putLong(LAT, Double.doubleToLongBits(latLng.latitude)).apply();
-        sharedPreferences.edit().putBoolean(IS_SETTLED_POINT, true).apply();
-    }
-
 }

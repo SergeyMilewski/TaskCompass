@@ -80,7 +80,6 @@ public class RxLocationEmitter {
                     for (Location location : locationResult.getLocations()) {
                         if (location != null) {
                             e.onNext(location);
-                            Log.d("Sergey", "emmit location" + location.getLongitude() + " " + location.getLatitude());
                         }
                     }
                 }
@@ -93,7 +92,6 @@ public class RxLocationEmitter {
                         mFusedLocationClient.removeLocationUpdates(locationCallback);
                         locationCallback = null;
                     }
-                    Log.d("Sergey", "on dispose location");
                 }
 
                 @Override

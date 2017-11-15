@@ -1,4 +1,4 @@
-package com.sergey.compas.ui.fragments;
+package com.sergey.compas.ui.dialog;
 
 import android.app.Dialog;
 import android.location.Location;

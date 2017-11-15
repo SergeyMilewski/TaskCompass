@@ -2,8 +2,8 @@ package com.sergey.compas.dagger.components;
 
 import com.sergey.compas.dagger.modules.AppModule;
 import com.sergey.compas.ui.MainActivity;
-import com.sergey.compas.ui.fragments.CompassFragment;
-import com.sergey.compas.ui.fragments.MapFragment;
+import com.sergey.compas.ui.compass.fragment.CompassFragment;
+import com.sergey.compas.ui.map.fragment.MapFragment;
 
 import javax.inject.Singleton;
 

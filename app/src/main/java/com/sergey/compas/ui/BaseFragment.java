@@ -1,4 +1,4 @@
-package com.sergey.compas.ui.fragments;
+package com.sergey.compas.ui;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -86,6 +86,4 @@ public abstract class BaseFragment extends Fragment {
                 .create()
                 .show();
     }
-
-    public abstract void setLocation(Location location);
 }

@@ -5,7 +5,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.Log;
 
 import com.sergey.compas.exeptions.AccelerometerSensorError;
 import com.sergey.compas.exeptions.MagneticSensorError;
@@ -14,7 +13,6 @@ import javax.inject.Inject;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
-import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -28,20 +26,18 @@ public class RxSensorEmitter {
     private final Sensor gsensor;
     private float[] gravity = new float[3];
     private float[] geomagnetic = new float[3];
-    private Context context;
 
     private SensorEventListener sensorEventListener;
 
     @Inject
     public RxSensorEmitter(Context context) {
-        this.context = context;
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         gsensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         msensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
     }
 
     public Flowable<Float> getFlowable() {
-        return Flowable.create((FlowableOnSubscribe<Float>) e -> {
+        return Flowable.create(e -> {
             if (msensor == null) {
                 e.onError(new MagneticSensorError("Device doesn't have magnetic sensor"));
             }
@@ -57,6 +53,7 @@ public class RxSensorEmitter {
                         e.onNext(calculatedValue);
                     }
                 }
+
                 @Override
                 public void onAccuracyChanged(Sensor sensor, int accuracy) {
                 }
@@ -69,7 +66,6 @@ public class RxSensorEmitter {
                         sensorManager.unregisterListener(sensorEventListener);
                         sensorEventListener = null;
                     }
-                    Log.d("Sergey", "on dispose sensor");
                 }
 
                 @Override
@@ -99,10 +95,8 @@ public class RxSensorEmitter {
             float orientation[] = new float[3];
             SensorManager.getOrientation(R, orientation);
             float azimuth = (float) Math.toDegrees(-orientation[0]);
-            Log.d("Sergey", "emmit " + (azimuth < 0 ? azimuth + 360 : azimuth));
             return azimuth < 0 ? azimuth + 360 : azimuth;
         }
-        Log.d("Sergey", "old value");
         return null;
     }
 

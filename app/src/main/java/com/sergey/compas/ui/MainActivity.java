@@ -15,6 +15,7 @@ import android.util.SparseArray;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -80,12 +81,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        setCurrentLocation();
+     //   setCurrentLocation();
 
     }
 
 
-    public void setCurrentLocation() {
+  /*  public void setCurrentLocation() {
         if (!googleApiClient.isConnected()) {
             googleApiClient.connect();
             return;
@@ -100,14 +101,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 return;
             }
             if (isShouldZoom(lastLocation)) {
-                baseFragment.zoomToUserPosition(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
+              //  baseFragment.zoomToUserPosition(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
             }
             if (baseFragment instanceof CompassFragment) {
                 CompassFragment compassFragment = (CompassFragment) baseFragment;
-                compassFragment.setCurrentCoordinates(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
+              //  compassFragment.setCurrentCoordinates(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
             }
         }
-    }
+    } */
 
     @SuppressWarnings({"MissingPermission"}) //we already have asked permissions from fragment
     public void requestLocationUpdate() {

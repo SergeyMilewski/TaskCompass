@@ -71,7 +71,7 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
-    public void zoomToUserPosition(LatLng latLng) {
+    protected void zoomToUserPosition(LatLng latLng) {
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(latLng).zoom(15).build();
         googleMap.animateCamera(CameraUpdateFactory

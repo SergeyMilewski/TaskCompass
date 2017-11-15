@@ -78,7 +78,6 @@ public class CustomCompasView extends View {
 
     public void setAzimuth(float angle) {
         this.arrowCompassAngleTarget = angle;
-
         redraw();
     }
 

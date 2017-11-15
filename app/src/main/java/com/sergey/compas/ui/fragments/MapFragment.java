@@ -19,11 +19,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.sergey.compas.MyApplication;
 import com.sergey.compas.R;
+import com.sergey.compas.data.RxLocationEmitter;
 import com.sergey.compas.ui.MainActivity;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by smilevkiy on 27.10.17.
@@ -36,10 +39,14 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
     public final static String LNG = "longitude";
     public final static String LAT = "latitude";
     public final static String IS_SETTLED_POINT = "is_settled_point";
+    private Disposable disposable;
 
 
     @Inject
     SharedPreferences sharedPreferences;
+
+    @Inject
+    RxLocationEmitter rxLocationEmitter;
 
 
     @Override
@@ -89,12 +96,15 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
     public void onResume() {
         mapView.onResume();
         super.onResume();
+        checkPermission(() -> disposable = rxLocationEmitter.getLastLocation()
+                .subscribe(location -> zoomToUserPosition(new LatLng(location.getLatitude(), location.getLongitude()))));
     }
 
     @Override
     public void onPause() {
         mapView.onPause();
         super.onPause();
+        disposable.dispose();
 
     }
 
@@ -114,7 +124,6 @@ public class MapFragment extends BaseFragment implements OnMapReadyCallback {
     public void onMapReady(final GoogleMap googleMap) {
         this.googleMap = googleMap;
         checkPermission(() -> this.googleMap.setMyLocationEnabled(true));
-        ((MainActivity) getActivity()).setCurrentLocation();
         this.googleMap.setOnMapLongClickListener(this::putMarker);
         if (sharedPreferences.getBoolean(IS_SETTLED_POINT, false)) {
             double lng = Double.longBitsToDouble(sharedPreferences.getLong(LNG, 0));
